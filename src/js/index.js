@@ -17,6 +17,7 @@ const APE_KEY = "128402215172fea4f96566ae019f6b5d";
 document.addEventListener("DOMContentLoaded", () => {
   renderNewsMovies();
   renderPopularMovie();
+  renderTopRatedMovies();
 });
 
 const getNewsMovies = () => {
@@ -80,7 +81,7 @@ const renderPopularMovie = async () => {
 
   movies.forEach((movie, index) => {
     const { id, title, poster_path } = movie;
-    const movieCover = `https://image.tmdb.org/t/p/original${poster_path}`;
+    const movieCover = `https://image.tmdb.org/t/p/w500${poster_path}`;
     const urlMovie = `/movie.html?id=${id}`;
 
     if (index < 5) {
@@ -93,5 +94,39 @@ const renderPopularMovie = async () => {
       `;
     }
     document.getElementsByClassName("now-playing__list")[0].innerHTML = html;
+  });
+};
+
+const getTopRatedMovies = () => {
+  const url = `${URL_PATH}/3/movie/top_rated?api_key=${APE_KEY}&language=es-ES&page=1`;
+
+  return fetch(url)
+    .then((response) => response.json())
+    .then((result) => result.results)
+    .catch((err) => console.log(err));
+};
+
+const renderTopRatedMovies = async () => {
+  const topRatedMovies = await getTopRatedMovies();
+
+  let html = "";
+
+  topRatedMovies.forEach((topMovies, index) => {
+    const { id, title, poster_path, popularity, vote_average, vote_count } =
+      topMovies;
+    const movieCover = `https://image.tmdb.org/t/p/w500${poster_path}`;
+    const urlMovie = `/movie.html?id=${id}`;
+
+    if (index < 5) {
+      html += `
+          <li class="list-group-item">
+          <img src="${movieCover}" alt="${title}" />
+          <h3>${title}</h3>
+          <a href="${urlMovie}" class="btn btn-primary">Ver más</a>
+          </li>
+      `;
+    }
+    document.getElementsByClassName("top-rated-playing__list")[0].innerHTML =
+      html;
   });
 };
