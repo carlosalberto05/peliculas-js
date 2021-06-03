@@ -16,12 +16,13 @@ const APE_KEY = "128402215172fea4f96566ae019f6b5d";
 
 document.addEventListener("DOMContentLoaded", () => {
   renderNewsMovies();
-  renderPopularMovie();
-  renderTopRatedMovies();
+  renderListMovies("popular", "now-playing__list");
+  renderListMovies("top_rated", "top-rated-playing__list");
 });
 
-const getNewsMovies = () => {
-  const url = `${URL_PATH}/3/movie/now_playing?api_key=${APE_KEY}&language=es-ES&page=1`;
+//Petición para traer todas las peliculas y mandar llamar esta en NewsMovies y listMovies
+const getMovies = (type) => {
+  const url = `${URL_PATH}/3/movie/${type}?api_key=${APE_KEY}&language=es-ES&page=1`;
 
   return fetch(url)
     .then((response) => response.json())
@@ -29,8 +30,9 @@ const getNewsMovies = () => {
     .catch((err) => console.log(err));
 };
 
+//Carrousel de la página de inicio
 const renderNewsMovies = async () => {
-  const newMovies = await getNewsMovies();
+  const newMovies = await getMovies("now_playing");
 
   let html = "";
 
@@ -65,17 +67,9 @@ const renderNewsMovies = async () => {
   document.getElementsByClassName("list-news-movies")[0].innerHTML = html;
 };
 
-const getPopularMovies = () => {
-  const url = `${URL_PATH}/3/movie/popular?api_key=${APE_KEY}&language=es-ES&page=1`;
-
-  return fetch(url)
-    .then((response) => response.json())
-    .then((result) => result.results)
-    .catch((err) => console.log(err));
-};
-
-const renderPopularMovie = async () => {
-  const movies = await getPopularMovies();
+//Lista de peliculas populares y mejores puntuadas
+const renderListMovies = async (type, classLoc) => {
+  const movies = await getMovies(type);
 
   let html = "";
 
@@ -93,40 +87,6 @@ const renderPopularMovie = async () => {
       </li>
       `;
     }
-    document.getElementsByClassName("now-playing__list")[0].innerHTML = html;
-  });
-};
-
-const getTopRatedMovies = () => {
-  const url = `${URL_PATH}/3/movie/top_rated?api_key=${APE_KEY}&language=es-ES&page=1`;
-
-  return fetch(url)
-    .then((response) => response.json())
-    .then((result) => result.results)
-    .catch((err) => console.log(err));
-};
-
-const renderTopRatedMovies = async () => {
-  const topRatedMovies = await getTopRatedMovies();
-
-  let html = "";
-
-  topRatedMovies.forEach((topMovies, index) => {
-    const { id, title, poster_path, popularity, vote_average, vote_count } =
-      topMovies;
-    const movieCover = `https://image.tmdb.org/t/p/w500${poster_path}`;
-    const urlMovie = `/movie.html?id=${id}`;
-
-    if (index < 5) {
-      html += `
-          <li class="list-group-item">
-          <img src="${movieCover}" alt="${title}" />
-          <h3>${title}</h3>
-          <a href="${urlMovie}" class="btn btn-primary">Ver más</a>
-          </li>
-      `;
-    }
-    document.getElementsByClassName("top-rated-playing__list")[0].innerHTML =
-      html;
+    document.getElementsByClassName(classLoc)[0].innerHTML = html;
   });
 };
