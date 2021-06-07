@@ -36,7 +36,7 @@ const renderMovieDetails = async (movieId) => {
   renderBackground(backdrop_path);
   renderPoster(poster_path, title);
   renderMovieData(title, overview, genres, release_date);
-  renderTeaser(movieId);
+  getTeaser(movieId);
 };
 
 const renderBackground = (backdrop_path) => {
@@ -83,11 +83,37 @@ const renderMovieData = (title, overview, genres, release_date) => {
   document.getElementsByClassName("movide-info__data")[0].innerHTML = html;
 };
 
-const renderTeaser = (movieId) => {
+const getTeaser = (movieId) => {
   const url = `${URL_PATH}/3/movie/${movieId}/videos?api_key=${API_KEY}&language=es-ES`;
 
   fetch(url)
     .then((response) => response.json())
-    .then((result) => console.log(result.results))
+    .then((result) => renderTeaser(result))
     .catch((err) => console.log(err));
+};
+
+const renderTeaser = (objVideo) => {
+  console.log(objVideo);
+  let keyVideo = "";
+
+  objVideo.results.forEach((video) => {
+    if (video.type === "Trailer" && video.site === "YouTube") {
+      keyVideo = video.key;
+    }
+  });
+
+  let urlIframe = "";
+
+  if (keyVideo !== "") {
+    urlIframe = `
+      <iframe width="100%" height="440px" src="https://www.youtube.com/embed/${keyVideo}" 
+      frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; 
+      gyroscope; picture-in-picture" allowfullscreen></iframe>
+    `;
+  } else {
+    urlIframe = "<div class='no-teaser'>La película no tiene trailer</div>";
+  }
+
+  document.getElementsByClassName("video-teaser-iframe")[0].innerHTML =
+    urlIframe;
 };
