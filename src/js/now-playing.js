@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let { page } = getUrlVars();
   page == undefined ? (page = 1) : null;
   renderNewMovies(page);
+  renderControls(page);
 });
 
 const getUrlVars = () => {
@@ -50,4 +51,65 @@ const renderNewMovies = async (page) => {
   });
 
   document.getElementsByClassName("list-cards")[0].innerHTML = html;
+};
+
+const renderControls = (page) => {
+  const baseUrlPage = "../../now-playing.html?page=";
+  const pageNubmer = parseInt(page);
+  const previus = pageNubmer - 1;
+  const next = pageNubmer + 1;
+
+  let html = "";
+
+  if (page == 1) {
+    html = `
+      <ul class="pagination justify-content-center">
+        <li class="page-item disabled">
+        <a class="page-link" href="#">
+            <i class="fas fa-chevron-left"></i>
+        </a> 
+        </li>
+        <li class="page-item active">
+            <a class="page-link" href="${baseUrlPage + "1"}">1</a>
+        </li>
+        <li class="page-item ">
+            <a class="page-link" href="${baseUrlPage + "2"}">2</a>
+        </li>
+        <li class="page-item ">
+            <a class="page-link" href="${baseUrlPage + "3"}">3</a>
+        </li>
+        <li class="page-item ">
+        <a class="page-link" href="${baseUrlPage + "2"}">
+            <i class="fas fa-chevron-right"></i>
+        </a>
+    </li>
+      </ul>
+      `;
+  } else {
+    html = `
+    <ul class="pagination justify-content-center">
+      <li class="page-item">
+      <a class="page-link" href="${baseUrlPage + previus}">
+          <i class="fas fa-chevron-left"></i>
+      </a> 
+      </li>
+      <li class="page-item ">
+          <a class="page-link" href="${baseUrlPage + previus}">${previus}</a>
+      </li>
+      <li class="page-item active">
+          <a class="page-link" href="${baseUrlPage + page}">${page}</a>
+      </li>
+      <li class="page-item ">
+          <a class="page-link" href="${baseUrlPage + next}">${next}</a>
+      </li>
+      <li class="page-item ">
+      <a class="page-link" href="${baseUrlPage + next}">
+          <i class="fas fa-chevron-right"></i>
+      </a>
+  </li>
+    </ul>
+    `;
+  }
+
+  document.getElementsByClassName("navigation")[0].innerHTML = html;
 };
