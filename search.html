@@ -63,6 +63,16 @@
       </div>
     </nav>
 
-    <h1>Buscador</h1>
+    <div class="container mt-5">
+      <h1 class="text-center mb-5">Buscador de Películas</h1>
+      <input
+        id="search-movie"
+        class="form-control"
+        placeholder="Busca una película"
+        type="text"
+        onkeyup="searchMovies()"
+      />
+      <div class="row list-card"></div>
+    </div>
   </body>
 </html>
